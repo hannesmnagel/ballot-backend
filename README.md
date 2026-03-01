@@ -72,9 +72,46 @@ Public:
 - `POST /api/public/polls/:publicId/vote`
 - `GET /api/public/polls/:publicId/results`
 
-## Docker compose
+## Docker compose (Local)
 
 1. `cp .env.example .env`
 2. `docker compose up --build`
 
 App runs on `http://localhost:3000`.
+
+## Production Deployment
+
+The app is automatically deployed to https://ballot.hannesnagel.com via GitHub Actions.
+
+**How it works:**
+1. Push to `main` branch triggers GitHub Actions workflow
+2. Workflow builds Docker image and pushes to GitHub Container Registry (ghcr.io)
+3. Server pulls latest image from GHCR and restarts containers
+
+**Manual deployment (if needed):**
+```bash
+# SSH into server
+ssh hannesnagel.com
+
+# Navigate to deployment directory
+cd ~/ballot-backend
+
+# Pull latest image and restart
+docker compose pull
+docker compose up -d
+
+# View logs
+docker compose logs -f web
+```
+
+**Environment:**
+- **URL:** https://ballot.hannesnagel.com
+- **Port:** 8002 (internal)
+- **Reverse Proxy:** Caddy (auto-manages SSL via Let's Encrypt)
+- **Database:** PostgreSQL 16 (persisted in Docker volume)
+
+**Updating environment variables:**
+Edit `~/ballot-backend/docker-compose.yml` on the server and restart:
+```bash
+docker compose up -d
+```
