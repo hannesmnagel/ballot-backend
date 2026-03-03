@@ -71,7 +71,6 @@ export type PollResultsView = {
 
 export const envSchema = z.object({
   DATABASE_URL: z.string().url(),
-  BETTER_AUTH_SECRET: z.string().min(16),
   BETTER_AUTH_URL: z.string().url(),
   SMTP_HOST: z.string().min(1),
   SMTP_PORT: z.coerce.number().int().positive(),
